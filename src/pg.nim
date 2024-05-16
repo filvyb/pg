@@ -41,7 +41,8 @@ proc checkError(db: DbConn) =
 proc rows*(
   db: DbConn,
   query: SqlQuery,
-  args: seq[string]): Future[seq[Row]] {.async.} =
+  args: seq[string] = @[]
+  ): Future[seq[Row]] {.async.} =
   ## Runs the SQL getting results.
   assert db.status == CONNECTION_OK
   let success = pqsendQuery(db, dbFormat(query, args))
@@ -80,7 +81,7 @@ proc returnConn(pool: AsyncPool, conIdx: int) =
 proc rows*(
     pool: AsyncPool,
     query: SqlQuery,
-    args: seq[string]
+    args: seq[string] = @[]
   ): Future[seq[Row]] {.async.} =
   ## Runs the SQL getting results.
   let conIdx = await pool.getFreeConnIdx()
@@ -90,7 +91,7 @@ proc rows*(
 proc exec*(
     pool: AsyncPool,
     query: SqlQuery,
-    args: seq[string]
+    args: seq[string] = @[]
   ) {.async.} =
   ## Runs the SQL without results.
   let conIdx = await pool.getFreeConnIdx()
